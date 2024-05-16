@@ -1,0 +1,7 @@
+/data/
+.idea
+.env
+.tmp
+*.log
+/app/build
+.DS_Store
