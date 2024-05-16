@@ -1,0 +1,5 @@
+env: "local"
+db_storage_path: "./db/storage.db"
+http:
+  host: localhost
+  port: 8080
