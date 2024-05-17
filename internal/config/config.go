@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+const EnvLocal = "local"
+const EnvDev = "dev"
+const EnvProd = "prod"
+
 type Config struct {
 	Env           string `yaml:"env" env-default:"local"`
 	DbStoragePath string `yaml:"db_storage_path" env-default:"./db"`
