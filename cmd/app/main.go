@@ -4,6 +4,8 @@ import (
 	"log/slog"
 	"os"
 	"short-urls/internal/config"
+	sqliteLog "short-urls/internal/logger/sqlite"
+	"short-urls/internal/storage/sqlite"
 )
 
 func main() {
@@ -16,6 +18,14 @@ func main() {
 	log.Info("Debug level", slog.String("env", cfg.Env))
 
 	//TODO init storage
+	storage, err := sqlite.New(cfg.DbStoragePath)
+	if err != nil {
+		log.Error("failed to init storage", sqliteLog.Err(err))
+		os.Exit(1)
+	}
+
+	_ = storage
+
 	//TODO init router
 	//TODO run app
 }

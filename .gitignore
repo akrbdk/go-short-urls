@@ -5,3 +5,4 @@
 *.log
 /app/build
 .DS_Store
+/storage/storage.db
