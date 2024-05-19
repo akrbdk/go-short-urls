@@ -1,10 +1,13 @@
 package main
 
 import (
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"log/slog"
 	"os"
 	"short-urls/internal/config"
 	sqliteLog "short-urls/internal/logger/sqlite"
+	mwLogger "short-urls/internal/middleware/logger"
 	"short-urls/internal/storage/sqlite"
 )
 
@@ -25,6 +28,14 @@ func main() {
 	}
 
 	_ = storage
+
+	router := chi.NewRouter()
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(mwLogger.New(log))
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
 
 	//TODO init router
 	//TODO run app
