@@ -4,30 +4,27 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log/slog"
+	"net/http"
 	"os"
 	"short-urls/internal/config"
-	sqliteLog "short-urls/internal/logger/sqlite"
+	"short-urls/internal/handlers/save"
+	sqliteLog "short-urls/internal/lib/logger/sqlite"
 	mwLogger "short-urls/internal/middleware/logger"
 	"short-urls/internal/storage/sqlite"
 )
 
 func main() {
-	//TODO init config
 	cfg := config.MustLoad()
 
-	//TODO init logger
 	log := initLogger(cfg.Env)
 	log.Info("Starting app")
 	log.Info("Debug level", slog.String("env", cfg.Env))
 
-	//TODO init storage
 	storage, err := sqlite.New(cfg.DbStoragePath)
 	if err != nil {
 		log.Error("failed to init storage", sqliteLog.Err(err))
 		os.Exit(1)
 	}
-
-	_ = storage
 
 	router := chi.NewRouter()
 
@@ -37,8 +34,23 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	//TODO init router
-	//TODO run app
+	router.Post("/url", save.New(log, storage))
+
+	log.Info("starting server", slog.String("address", cfg.Address))
+
+	srv := &http.Server{
+		Addr:         cfg.Address,
+		Handler:      router,
+		ReadTimeout:  4,
+		WriteTimeout: 4,
+		IdleTimeout:  30,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+	}
+
+	log.Info("server stopped")
 }
 
 func initLogger(env string) *slog.Logger {

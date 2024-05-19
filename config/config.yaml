@@ -1,5 +1,4 @@
 env: "local" #local, dev, prod
 db_storage_path: "./storage/storage.db"
 http:
-  host: localhost
-  port: 8080
+  address: localhost:8080

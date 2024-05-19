@@ -17,8 +17,7 @@ type Config struct {
 }
 
 type HttpConfig struct {
-	Host string `yaml:"host" env-default:"127.0.0.1"`
-	Port string `yaml:"port" env-default:"8080"`
+	Address string `yaml:"address" env-default:"127.0.0.1:8080"`
 }
 
 func MustLoad() *Config {
